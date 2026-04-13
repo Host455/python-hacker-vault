@@ -1,0 +1,183 @@
+{% extends 'ids_app/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    body {
+        background: #0f0c29;
+        background: linear-gradient(to right, #24243e, #302b63, #0f0c29);
+        min-height: 100vh;
+        margin: 0;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        color: white;
+        padding-top: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .container {
+        max-width: 400px;
+        width: 90%;
+        padding: 2rem;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .title {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        font-size: 2.2rem;
+        font-weight: 700;
+        background: linear-gradient(45deg, #00ff88, #00b4d8);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        animation: titleAnimation 1.5s ease-out;
+    }
+
+    @keyframes titleAnimation {
+        from { 
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 1rem;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="email"] {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+        background: rgba(0, 0, 0, 0.2);
+        color: white;
+        box-sizing: border-box;
+    }
+
+    input[type="text"]:focus,
+    input[type="password"]:focus,
+    input[type="email"]:focus {
+        border-color: #00ff88;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.2);
+    }
+
+    .btn {
+        width: 100%;
+        padding: 12px;
+        background: linear-gradient(45deg, #00ff88, #00b4d8);
+        color: #1a1a1a;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 1rem;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .error-message {
+        color: #ff416c;
+        text-align: center;
+        margin-bottom: 1.5rem;
+        padding: 0.75rem;
+        background: rgba(255, 65, 108, 0.1);
+        border-radius: 8px;
+        border-left: 3px solid #ff416c;
+    }
+
+    .footer {
+        margin-top: 1.5rem;
+        text-align: center;
+    }
+
+    .footer a {
+        color: #00ff88;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .footer a:hover {
+        text-decoration: underline;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 1rem;
+    }
+
+    .forgot-password {
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .forgot-password:hover {
+        color: #00ff88;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="title">Sign In</h1>
+    
+    {% if error_message %}
+        <div class="error-message">
+            {{ error_message }}
+        </div>
+    {% endif %}
+    
+    <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required autofocus>
+        </div>
+        
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        
+        <div class="form-actions">
+            <a href="{% url 'forgot_password' %}" class="forgot-password">Forgot password?</a>
+        </div>
+        
+        <button type="submit" class="btn">Sign In</button>
+    </form>
+    
+    <div class="footer">
+        <p>Don't have an account? <a href="{% url 'register' %}">Register</a></p>
+    </div>
+</div>
+{% endblock %}

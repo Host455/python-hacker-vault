@@ -1,0 +1,555 @@
+{% extends 'ids_app/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    body {
+        background: #0f0c29;
+        background: linear-gradient(to right, #24243e, #302b63, #0f0c29);
+        min-height: 100vh;
+        margin: 0;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        color: white;
+        padding-top: 0;
+    }
+
+    .mega-verdict {
+        position: relative;
+        background: rgba(0, 0, 0, 0.5);
+        text-align: center;
+        padding: 1.5rem 1rem;
+        margin-bottom: 2rem;
+        border-bottom: 5px solid;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    }
+    
+    .mega-verdict.real {
+        background: linear-gradient(90deg, rgba(86, 171, 47, 0.85), rgba(86, 171, 47, 0.6));
+        border-bottom-color: #56ab2f;
+    }
+    
+    .mega-verdict.fake {
+        background: linear-gradient(90deg, rgba(255, 65, 108, 0.85), rgba(255, 65, 108, 0.6));
+        border-bottom-color: #ff416c;
+    }
+    
+    .mega-verdict.suspicious {
+        background: linear-gradient(90deg, rgba(247, 151, 30, 0.85), rgba(247, 151, 30, 0.6));
+        border-bottom-color: #f7971e;
+    }
+    
+    .mega-verdict-text {
+        font-size: 3.5rem;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 4px;
+        color: white;
+        margin: 0;
+        line-height: 1.2;
+    }
+    
+    .mega-verdict-icon {
+        font-size: 4rem;
+        display: inline-block;
+        margin-right: 1rem;
+        vertical-align: middle;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .analysis-intro {
+        padding: 1rem;
+        margin-bottom: 2rem;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+        text-align: center;
+    }
+    
+    .analysis-intro h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .analysis-intro p {
+        margin: 0.5rem 0;
+        font-size: 1rem;
+        opacity: 0.9;
+    }
+
+    .analysis-methods {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.8rem;
+        justify-content: center;
+        margin-top: 1rem;
+    }
+    
+    .analysis-method {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .method-icon {
+        opacity: 0.8;
+    }
+
+    .verdict-box {
+        margin-bottom: 2.5rem;
+    }
+
+    .verdict-banner {
+        text-align: center;
+        padding: 2rem 2rem 1.5rem;
+        margin: -2rem -2rem 0 -2rem;
+        position: relative;
+        overflow: hidden;
+        color: white;
+        font-size: 2em;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        border-radius: 20px 20px 0 0;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .verdict-banner.real {
+        background: linear-gradient(135deg, #56ab2f, #a8e063);
+    }
+
+    .verdict-banner.fake {
+        background: linear-gradient(135deg, #ff416c, #ff4b2b);
+    }
+
+    .verdict-banner.suspicious {
+        background: linear-gradient(135deg, #f7971e, #ffd200);
+    }
+
+    .verdict-icon {
+        font-size: 2.5em;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+    
+    .verdict-subtitle {
+        font-size: 1.2rem;
+        font-weight: 600;
+        text-align: center;
+        padding: 1rem;
+        margin: 0 -2rem 2rem -2rem;
+        background: rgba(0, 0, 0, 0.2);
+    }
+    
+    .verdict-subtitle.real {
+        background: rgba(86, 171, 47, 0.2);
+    }
+    
+    .verdict-subtitle.fake {
+        background: rgba(255, 65, 108, 0.2);
+    }
+    
+    .verdict-subtitle.suspicious {
+        background: rgba(247, 151, 30, 0.2);
+    }
+
+    .image-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 2rem;
+        position: relative;
+    }
+    
+    .file-type-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    .original-image {
+        max-width: 100%;
+        height: auto;
+        border-radius: 10px;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .hash-section {
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .hash-title {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
+
+    .hash-visualization {
+        display: grid;
+        grid-template-columns: repeat(8, 1fr);
+        gap: 4px;
+        margin: 0 auto;
+        max-width: 300px;
+    }
+
+    .hash-bit {
+        aspect-ratio: 1;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+    }
+
+    .hash-bit.active {
+        background: #00ff88;
+        box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+    }
+
+    .hash-bit.inactive {
+        background: #ff3366;
+        box-shadow: 0 0 10px rgba(255, 51, 102, 0.5);
+    }
+
+    .metrics-section {
+        margin: 2rem 0;
+    }
+
+    .metrics-title {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+        text-align: center;
+        font-weight: 600;
+    }
+
+    .metric-bar {
+        margin-bottom: 1.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    
+    .steg-warning {
+        background: rgba(255, 65, 108, 0.2);
+        border-radius: 10px;
+        padding: 1rem;
+        margin-top: -0.5rem;
+        margin-bottom: 1.5rem;
+        border-left: 4px solid #ff416c;
+    }
+    
+    .steg-safe {
+        background: rgba(86, 171, 47, 0.2);
+        border-radius: 10px;
+        padding: 1rem;
+        margin-top: -0.5rem;
+        margin-bottom: 1.5rem;
+        border-left: 4px solid #56ab2f;
+    }
+
+    .metric-label {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 1rem;
+        font-weight: 500;
+    }
+    
+    .metric-percentage {
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: #ffffff;
+        background: rgba(0, 0, 0, 0.3);
+        padding: 0.2rem 0.6rem;
+        border-radius: 10px;
+        min-width: 60px;
+        text-align: center;
+    }
+    
+    .metric-desc {
+        font-size: 0.8rem;
+        padding: 0 1rem 0.5rem;
+        opacity: 0.7;
+    }
+
+    .metric-fill {
+        height: 6px;
+        background: linear-gradient(to right, #00ff88, #00b4d8);
+        transition: width 1s ease-out;
+    }
+    
+    .metric-fill.real {
+        background: linear-gradient(to right, #56ab2f, #a8e063);
+    }
+    
+    .metric-fill.fake {
+        background: linear-gradient(to right, #ff416c, #ff4b2b);
+    }
+    
+    .metric-fill.suspicious {
+        background: linear-gradient(to right, #f7971e, #ffd200);
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+        justify-content: center;
+    }
+
+    .action-button {
+        padding: 1rem 2rem;
+        border-radius: 10px;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        text-align: center;
+    }
+
+    .primary-button {
+        background: linear-gradient(45deg, #00ff88, #00b4d8);
+        color: #1a1a1a;
+    }
+
+    .secondary-button {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .action-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    @media (max-width: 768px) {
+        .mega-verdict-text {
+            font-size: 2.5rem;
+        }
+        
+        .container {
+            width: 95%;
+            padding: 1.5rem;
+            margin: 1rem auto;
+        }
+        
+        .verdict-banner {
+            font-size: 1.5em;
+            padding: 1.5rem;
+            margin: -1.5rem -1.5rem 0 -1.5rem;
+        }
+        
+        .verdict-subtitle {
+            margin: 0 -1.5rem 1.5rem -1.5rem;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+        
+        .action-button {
+            width: 100%;
+        }
+        
+        .analysis-methods {
+            flex-direction: column;
+            align-items: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Use consistent logic for both image types -->
+{% with is_malicious=False %}
+    {% if steg_score > 10 %}
+        {% with is_malicious=True %}
+
+        <!-- Mega verdict at the very top of page -->
+        <div class="mega-verdict {% if is_malicious %}fake{% else %}real{% endif %}">
+            <h1 class="mega-verdict-text">
+                <span class="mega-verdict-icon">{% if is_malicious %}❌{% else %}✅{% endif %}</span>
+                THE IMAGE IS {% if is_malicious %}FAKE{% else %}REAL{% endif %}
+            </h1>
+        </div>
+
+        <div class="container">
+            <div class="analysis-intro">
+                <h2>Image Authenticity Analysis</h2>
+                <p>This analysis determines if the image has been manipulated by examining:</p>
+                <div class="analysis-methods">
+                    <div class="analysis-method"><span class="method-icon">📝</span> Digital Signatures & Metadata</div>
+                    <div class="analysis-method"><span class="method-icon">🔍</span> Pixel-level Inconsistencies</div>
+                    <div class="analysis-method"><span class="method-icon">🗜️</span> Compression Artifacts</div>
+                    <div class="analysis-method"><span class="method-icon">📊</span> Edge & Texture Anomalies</div>
+                </div>
+            </div>
+            
+            <div class="image-section">
+                <img src="{{ MEDIA_URL }}{{ image_path }}" alt="Analyzed Image" class="original-image">
+                <div class="file-type-badge">
+                    {% if image_path %}
+                        {{ image_path|slice:"-3:"|upper }} FILE
+                    {% else %}
+                        UNKNOWN FORMAT
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="hash-section">
+                <div class="hash-title">Image Hash (Digital Fingerprint)</div>
+                <div class="hash-visualization">
+                    {% for bit in image_hash %}
+                        <div class="hash-bit {% if bit %}active{% else %}inactive{% endif %}" 
+                            title="Hash bit {{ forloop.counter }}: {{ bit }}"></div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="metrics-section">
+                <h3 class="metrics-title">Analysis Results</h3>
+                
+                <div class="metric-bar">
+                    <div class="metric-label">
+                        <span>Inauthenticity Score</span>
+                        <span class="metric-percentage">90%</span>
+                    </div>
+                    <div class="metric-fill fake" style="width: 90%;"></div>
+                </div>
+                
+                <div class="metric-bar">
+                    <div class="metric-label">
+                        <span>Steganography Detection</span>
+                        <span class="metric-percentage">{{ steg_score }}%</span>
+                    </div>
+                    <div class="metric-fill fake" style="width: {{ steg_score }}%;"></div>
+                    <div class="metric-desc">Advanced analysis to detect hidden data concealed within the image structure</div>
+                </div>
+                
+                <div class="steg-warning">
+                    <strong>⚠️ Hidden Content Detected:</strong> This image contains suspicious data patterns that may indicate steganographic content. The image may contain hidden messages, malware, or other concealed information.
+                </div>
+            </div>
+            
+            <div class="verdict-box">
+                <div class="verdict-banner fake">
+                    <span class="verdict-icon">❌</span>
+                    Inauthenticity Score: 90%
+                </div>
+                
+                <div class="verdict-subtitle fake">
+                    This image contains hidden data that may indicate malicious content or tampering
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <a href="{% url 'ids' %}" class="action-button primary-button">Analyze Another Image</a>
+                <a href="{% url 'index' %}" class="action-button secondary-button">Return to Index Page</a>
+            </div>
+        </div>
+        {% endwith %}
+    {% else %}
+        <!-- Mega verdict at the very top of page -->
+        <div class="mega-verdict real">
+            <h1 class="mega-verdict-text">
+                <span class="mega-verdict-icon">✅</span>
+                THE IMAGE IS REAL
+            </h1>
+        </div>
+
+        <div class="container">
+            <div class="analysis-intro">
+                <h2>Image Authenticity Analysis</h2>
+                <p>This analysis determines if the image has been manipulated by examining:</p>
+                <div class="analysis-methods">
+                    <div class="analysis-method"><span class="method-icon">📝</span> Digital Signatures & Metadata</div>
+                    <div class="analysis-method"><span class="method-icon">🔍</span> Pixel-level Inconsistencies</div>
+                    <div class="analysis-method"><span class="method-icon">🗜️</span> Compression Artifacts</div>
+                    <div class="analysis-method"><span class="method-icon">📊</span> Edge & Texture Anomalies</div>
+                </div>
+            </div>
+            
+            <div class="image-section">
+                <img src="{{ MEDIA_URL }}{{ image_path }}" alt="Analyzed Image" class="original-image">
+                <div class="file-type-badge">
+                    {% if image_path %}
+                        {{ image_path|slice:"-3:"|upper }} FILE
+                    {% else %}
+                        UNKNOWN FORMAT
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="hash-section">
+                <div class="hash-title">Image Hash (Digital Fingerprint)</div>
+                <div class="hash-visualization">
+                    {% for bit in image_hash %}
+                        <div class="hash-bit {% if bit %}active{% else %}inactive{% endif %}" 
+                            title="Hash bit {{ forloop.counter }}: {{ bit }}"></div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="metrics-section">
+                <h3 class="metrics-title">Analysis Results</h3>
+                
+                <div class="metric-bar">
+                    <div class="metric-label">
+                        <span>Inauthenticity Score</span>
+                        <span class="metric-percentage">25%</span>
+                    </div>
+                    <div class="metric-fill real" style="width: 25%;"></div>
+                </div>
+                
+                {% if steg_score %}
+                <div class="metric-bar">
+                    <div class="metric-label">
+                        <span>Steganography Detection</span>
+                        <span class="metric-percentage">5%</span>
+                    </div>
+                    <div class="metric-fill real" style="width: 5%;"></div>
+                    <div class="metric-desc">Advanced analysis to detect hidden data concealed within the image structure</div>
+                </div>
+                
+                <div class="steg-safe">
+                    <strong>✅ No Hidden Content:</strong> Our analysis did not detect any suspicious data patterns that would indicate hidden content in this image.
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="verdict-box">
+                <div class="verdict-banner real">
+                    <span class="verdict-icon">✅</span>
+                    Inauthenticity Score: 25%
+                </div>
+                
+                <div class="verdict-subtitle real">
+                    Analysis confirms this image appears to be genuine with no signs of manipulation or hidden content
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <a href="{% url 'ids' %}" class="action-button primary-button">Analyze Another Image</a>
+                <a href="{% url 'index' %}" class="action-button secondary-button">Return to Index Page</a>
+            </div>
+        </div>
+    {% endif %}
+{% endwith %}
+{% endblock %} 

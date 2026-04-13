@@ -1,0 +1,388 @@
+{% extends 'ids_app/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    body {
+        background: #0f0c29;
+        background: linear-gradient(to right, #24243e, #302b63, #0f0c29);
+        min-height: 100vh;
+        margin: 0;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        color: white;
+        padding-top: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .container {
+        max-width: 450px;
+        width: 90%;
+        padding: 2rem;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        margin: 2rem;
+    }
+
+    .title {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        font-size: 2.2rem;
+        font-weight: 700;
+        background: linear-gradient(45deg, #00ff88, #00b4d8);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 1rem;
+    }
+
+    input {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: rgba(0, 0, 0, 0.2);
+        color: white;
+        box-sizing: border-box;
+    }
+
+    input:focus {
+        border-color: #00ff88;
+        box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.2);
+        outline: none;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 12px;
+        background: linear-gradient(45deg, #00ff88, #00b4d8);
+        color: #1a1a1a;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-bottom: 1rem;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn:active {
+        transform: translateY(0);
+    }
+
+    .error-message {
+        color: #ff416c;
+        background: rgba(255, 65, 108, 0.1);
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        text-align: center;
+        border-left: 3px solid #ff416c;
+    }
+
+    .field-error {
+        color: #ff416c;
+        font-size: 0.85rem;
+        margin-top: 0.5rem;
+        display: none;
+    }
+
+    .links {
+        text-align: center;
+        margin-top: 1rem;
+    }
+
+    .links a {
+        color: #00ff88;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .links a:hover {
+        text-decoration: underline;
+    }
+
+    .password-toggle {
+        position: absolute;
+        right: 12px;
+        top: 42px;
+        cursor: pointer;
+        color: rgba(255, 255, 255, 0.7);
+        background: none;
+        border: none;
+        padding: 0;
+    }
+
+    .password-toggle svg {
+        fill: rgba(255, 255, 255, 0.7);
+    }
+
+    .password-strength {
+        font-size: 0.85rem;
+        margin-top: 0.5rem;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .strength-meter {
+        height: 4px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 2px;
+        margin-top: 0.5rem;
+        overflow: hidden;
+    }
+
+    .strength-meter div {
+        height: 100%;
+        width: 0;
+        transition: width 0.3s ease;
+    }
+
+    .weak { background: #ff416c; }
+    .medium { background: #ff9f44; }
+    .strong { background: #00ff88; }
+
+    .feature-card {
+        margin-bottom: 1.5rem;
+        background: rgba(0, 0, 0, 0.2);
+        padding: 1.2rem;
+        border-radius: 10px;
+        border-left: 3px solid transparent;
+        transition: all 0.3s ease;
+    }
+
+    .feature-card:hover {
+        border-left-color: #00ff88;
+        transform: translateY(-2px);
+    }
+
+    .feature-card h3 {
+        margin-top: 0;
+        color: white;
+        margin-bottom: 0.5rem;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .feature-icon {
+        margin-right: 0.5rem;
+        font-size: 1.2rem;
+    }
+
+    .feature-card p {
+        margin: 0;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="title">Create Account</h1>
+    
+    <div class="feature-card">
+        <h3><span class="feature-icon">🛡️</span> Secure Registration</h3>
+        <p>Create your account to access our advanced intrusion detection system and security tools.</p>
+    </div>
+    
+    <form method="post" action="{% url 'register' %}" id="registrationForm" onsubmit="return validateForm()">
+        {% csrf_token %}
+        {% if error %}
+            <div class="error-message">{{ error }}</div>
+        {% endif %}
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required
+                   pattern="[a-zA-Z0-9_]{3,20}"
+                   title="3-20 characters, letters, numbers and underscore only"
+                   oninput="validateUsername(this)">
+            <div class="field-error" id="username-error"></div>
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required
+                   minlength="8"
+                   oninput="checkPasswordStrength(this.value)">
+            <button type="button" class="password-toggle" onclick="togglePassword()">
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8 2C3 2 0 8 0 8s3 6 8 6 8-6 8-6-3-6-8-6zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+                </svg>
+            </button>
+            <div class="password-strength">Password strength: <span id="strength-text">None</span></div>
+            <div class="strength-meter">
+                <div id="strength-meter"></div>
+            </div>
+            <div class="field-error" id="password-error"></div>
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required
+                   oninput="validateEmail(this)">
+            <div class="field-error" id="email-error"></div>
+        </div>
+        
+        <div class="form-group">
+            <label for="phone_number">Phone Number</label>
+            <input type="tel" id="phone_number" name="phone_number" required
+                   pattern="[0-9]{10,15}"
+                   title="Phone number should be between 10 and 15 digits"
+                   oninput="validatePhone(this)">
+            <div class="field-error" id="phone-error"></div>
+        </div>
+        
+        <button type="submit" class="btn">Create Account</button>
+        <div class="links">
+            <span>Already have an account?</span>
+            <a href="{% url 'login' %}">Sign In</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function togglePassword() {
+        const passwordInput = document.getElementById('password');
+        const toggleBtn = document.querySelector('.password-toggle svg');
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleBtn.innerHTML = '<path d="M13.359 11.238C15.06 9.72 16 8 16 8s-3-5.5-8-5.5a7.028 7.028 0 0 0-2.79.588l.77.771A5.944 5.944 0 0 1 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.134 13.134 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755-.165.165-.337.328-.517.486l.708.709z"/><path d="M11.297 9.176a3.5 3.5 0 0 0-4.474-4.474l.823.823a2.5 2.5 0 0 1 2.829 2.829l.822.822zm-2.943 1.299.822.822a3.5 3.5 0 0 1-4.474-4.474l.823.823a2.5 2.5 0 0 0 2.829 2.829z"/><path d="M3.35 5.47c-.18.16-.353.322-.518.487A13.134 13.134 0 0 0 1.172 8l.195.288c.335.48.83 1.12 1.465 1.755C4.121 11.332 5.881 12.5 8 12.5c.716 0 1.39-.133 2.02-.36l.77.772A7.029 7.029 0 0 1 8 13.5C3 13.5 0 8 0 8s.939-1.721 2.641-3.238l.708.709zm10.296 8.884-12-12 .708-.708 12 12-.708.708z"/>';
+        } else {
+            passwordInput.type = 'password';
+            toggleBtn.innerHTML = '<path d="M8 2C3 2 0 8 0 8s3 6 8 6 8-6 8-6-3-6-8-6zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>';
+        }
+    }
+
+    function checkPasswordStrength(password) {
+        const strengthMeter = document.getElementById('strength-meter');
+        const strengthText = document.getElementById('strength-text');
+        const error = document.getElementById('password-error');
+        
+        if (password.length === 0) {
+            strengthMeter.style.width = '0%';
+            strengthText.textContent = 'None';
+            error.style.display = 'none';
+            return;
+        }
+
+        let strength = 0;
+        let errorMsg = [];
+        
+        // Length check
+        if (password.length < 8) {
+            errorMsg.push('Password must be at least 8 characters');
+        } else {
+            strength += 1;
+        }
+        if (password.length >= 12) strength += 1;
+        
+        // Character variety checks
+        if (!/[A-Z]/.test(password)) errorMsg.push('Include at least one uppercase letter');
+        else strength += 1;
+        
+        if (!/[a-z]/.test(password)) errorMsg.push('Include at least one lowercase letter');
+        else strength += 1;
+        
+        if (!/[0-9]/.test(password)) errorMsg.push('Include at least one number');
+        else strength += 1;
+        
+        if (!/[^A-Za-z0-9]/.test(password)) errorMsg.push('Include at least one special character');
+        else strength += 1;
+
+        // Update error message
+        if (errorMsg.length > 0) {
+            error.textContent = errorMsg.join(', ');
+            error.style.display = 'block';
+        } else {
+            error.style.display = 'none';
+        }
+
+        // Update strength meter
+        strengthMeter.style.width = ((strength / 6) * 100) + '%';
+        if (strength <= 2) {
+            strengthMeter.className = 'weak';
+            strengthText.textContent = 'Weak';
+        } else if (strength <= 4) {
+            strengthMeter.className = 'medium';
+            strengthText.textContent = 'Medium';
+        } else {
+            strengthMeter.className = 'strong';
+            strengthText.textContent = 'Strong';
+        }
+    }
+
+    function validateUsername(input) {
+        const error = document.getElementById('username-error');
+        if (!input.value.match(/^[a-zA-Z0-9_]{3,20}$/)) {
+            error.textContent = 'Username must be 3-20 characters long and contain only letters, numbers, and underscores';
+            error.style.display = 'block';
+        } else {
+            error.style.display = 'none';
+        }
+    }
+
+    function validateEmail(input) {
+        const error = document.getElementById('email-error');
+        if (!input.value.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+            error.textContent = 'Please enter a valid email address';
+            error.style.display = 'block';
+        } else {
+            error.style.display = 'none';
+        }
+    }
+
+    function validatePhone(input) {
+        const error = document.getElementById('phone-error');
+        if (!input.value.match(/^[0-9]{10,15}$/)) {
+            error.textContent = 'Please enter a valid phone number (10-15 digits)';
+            error.style.display = 'block';
+        } else {
+            error.style.display = 'none';
+        }
+    }
+
+    function validateForm() {
+        const username = document.getElementById('username');
+        const password = document.getElementById('password');
+        const email = document.getElementById('email');
+        const phone = document.getElementById('phone_number');
+        
+        validateUsername(username);
+        checkPasswordStrength(password.value);
+        validateEmail(email);
+        validatePhone(phone);
+        
+        const errors = document.querySelectorAll('.field-error');
+        for (let error of errors) {
+            if (error.style.display === 'block') {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+</script>
+{% endblock %}

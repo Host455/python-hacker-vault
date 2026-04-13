@@ -1,0 +1,246 @@
+{% extends 'ids_app/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    body {
+        background: #0f0c29;
+        background: linear-gradient(to right, #24243e, #302b63, #0f0c29);
+        min-height: 100vh;
+        margin: 0;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        color: white;
+        padding-top: 0;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        text-align: center;
+    }
+
+    .title {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        font-size: 3rem;
+        font-weight: 700;
+        background: linear-gradient(45deg, #00ff88, #00b4d8);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        animation: titleAnimation 1.5s ease-out;
+    }
+
+    @keyframes titleAnimation {
+        from { 
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .subtitle {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        animation: fadeIn 1.5s ease-out 0.5s both;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    .button-container {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+    }
+
+    .btn {
+        padding: 12px 24px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 160px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(45deg, #00ff88, #00b4d8);
+        color: #1a1a1a;
+    }
+
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn:active {
+        transform: translateY(0);
+    }
+
+    .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        margin-top: 3rem;
+        text-align: left;
+    }
+
+    .feature-card {
+        background: rgba(0, 0, 0, 0.2);
+        padding: 1.5rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+        border-left: 3px solid transparent;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+        border-left-color: #00ff88;
+    }
+
+    .feature-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        background: linear-gradient(45deg, #00ff88, #00b4d8);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .feature-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: white;
+    }
+
+    .feature-description {
+        color: rgba(255, 255, 255, 0.7);
+        line-height: 1.5;
+    }
+
+    .section-divider {
+        height: 2px;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        margin: 2rem 0;
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            width: 95%;
+            padding: 1.5rem;
+            margin: 1rem auto;
+        }
+
+        .title {
+            font-size: 2.5em;
+        }
+
+        .features {
+            grid-template-columns: 1fr;
+        }
+        
+        .button-container {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .btn {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="title">Welcome to the IDS System</h1>
+    <p class="subtitle">Advanced Intrusion Detection System for Network Security</p>
+    
+    {% if user.is_authenticated %}
+        <div class="button-container">
+            <a href="{% url 'ids' %}" class="btn btn-primary">
+                Launch IDS Detection
+            </a>
+            <a href="{% url 'logout' %}" class="btn btn-secondary">
+                Sign Out
+            </a>
+        </div>
+    {% else %}
+        <div class="button-container">
+            <a href="{% url 'login' %}" class="btn btn-primary">
+                Sign In
+            </a>
+            <a href="{% url 'register' %}" class="btn btn-secondary">
+                Create Account
+            </a>
+        </div>
+    {% endif %}
+
+    <div class="section-divider"></div>
+
+    <div class="features">
+        <div class="feature-card">
+            <div class="feature-icon">🛡️</div>
+            <h3 class="feature-title">Real-time Protection</h3>
+            <p class="feature-description">
+                Continuous monitoring and instant threat detection to keep your network secure.
+            </p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">📊</div>
+            <h3 class="feature-title">Advanced Analytics</h3>
+            <p class="feature-description">
+                Detailed insights and analytics to understand and prevent security threats.
+            </p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🔔</div>
+            <h3 class="feature-title">Instant Alerts</h3>
+            <p class="feature-description">
+                Get immediate notifications when suspicious activities are detected.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add smooth scroll behavior
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+</script>
+{% endblock %}

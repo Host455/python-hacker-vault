@@ -1,0 +1,21 @@
+INFO 2025-03-13 10:42:59,545 autoreload 14204 2080 Watching for file changes with StatReloader
+INFO 2025-03-13 10:44:30,179 autoreload 14204 2080 C:\Users\ASUS\Downloads\2\ids_project\settings.py changed, reloading.
+INFO 2025-03-13 10:44:31,336 autoreload 18316 4364 Watching for file changes with StatReloader
+INFO 2025-03-13 10:44:31,883 autoreload 18120 1576 Watching for file changes with StatReloader
+INFO 2025-03-13 10:44:32,389 autoreload 14540 19024 Watching for file changes with StatReloader
+INFO 2025-03-13 10:44:32,394 autoreload 18496 6868 Watching for file changes with StatReloader
+INFO 2025-03-13 10:44:42,002 autoreload 18496 6868 C:\Users\ASUS\Downloads\2\ids_project\settings.py changed, reloading.
+INFO 2025-03-13 10:44:42,007 autoreload 14540 19024 C:\Users\ASUS\Downloads\2\ids_project\settings.py changed, reloading.
+INFO 2025-03-13 10:44:42,205 autoreload 18316 4364 C:\Users\ASUS\Downloads\2\ids_project\settings.py changed, reloading.
+INFO 2025-03-13 10:44:42,624 autoreload 18120 1576 C:\Users\ASUS\Downloads\2\ids_project\settings.py changed, reloading.
+INFO 2025-03-13 10:44:43,573 autoreload 17784 3108 Watching for file changes with StatReloader
+INFO 2025-03-13 10:44:43,673 autoreload 13132 2884 Watching for file changes with StatReloader
+INFO 2025-03-13 10:44:44,061 autoreload 19424 10260 Watching for file changes with StatReloader
+INFO 2025-03-13 10:44:44,181 autoreload 18988 12716 Watching for file changes with StatReloader
+INFO 2025-03-13 10:44:46,861 autoreload 18136 1300 Watching for file changes with StatReloader
+INFO 2025-03-13 10:47:04,457 basehttp 17784 13652 "GET / HTTP/1.1" 200 4287
+INFO 2025-03-13 10:47:08,711 basehttp 17784 13652 "GET /login/ HTTP/1.1" 200 3377
+INFO 2025-03-13 10:47:17,930 basehttp 17784 13652 "POST /login/ HTTP/1.1" 200 3377
+INFO 2025-03-13 10:47:27,910 basehttp 17784 4912 "POST /login/ HTTP/1.1" 200 3377
+INFO 2025-03-13 10:48:10,952 basehttp 17784 4200 "POST /login/ HTTP/1.1" 200 3377
+INFO 2025-03-13 10:48:21,031 basehttp 17784 19284 "POST /login/ HTTP/1.1" 200 3377
